@@ -1,9 +1,11 @@
-import { enumerate, range, take } from "./array-util";
+import { enumerate, range } from "./array-util";
+import { getPixels } from "./image";
 
-export const preview = (element: HTMLElement, imageData: ImageData): void => {
+export const preview = (imageData: ImageData): HTMLElement => {
   const imageDiv = document.createElement("div");
-  const divs = [];
+  const divs: HTMLDivElement[][] = [];
   for (const y of range(imageData.height)) {
+    const row: HTMLDivElement[] = [];
     const rowDiv = document.createElement("div");
     rowDiv.setAttribute("style", "display: flex;");
     for (const x of range(imageData.width)) {
@@ -12,15 +14,17 @@ export const preview = (element: HTMLElement, imageData: ImageData): void => {
       div.style.width = "1em";
       div.style.height = "1em";
       rowDiv.appendChild(div);
-      divs.push(div);
+      row.push(div);
     }
+    divs.push(row);
     imageDiv.appendChild(rowDiv);
   }
 
-  element.appendChild(imageDiv);
-
-  for (const [i, [r, g, b, a]] of enumerate(take(4)([...imageData.data]))) {
-    const div = divs[i];
-    div.style.backgroundColor = `rgba(${r},${g},${b},${a})`;
+  for (const [y, pixelRow] of enumerate(getPixels(imageData))) {
+    for (const [x, [r, g, b, a]] of enumerate(pixelRow)) {
+      divs[y][x].style.backgroundColor = `rgba(${r},${g},${b},${a})`;
+    }
   }
+
+  return imageDiv;
 };
