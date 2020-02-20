@@ -1,0 +1,16 @@
+{
+  "name": "wfc-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/airtoxin/wfc-ts.git",
+  "author": "airtoxin <airtoxin@icloud.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel src/index.html"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4",
+    "prettier": "^1.19.1",
+    "typescript": "^3.8.1-rc"
+  }
+}
