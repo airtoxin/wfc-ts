@@ -6,22 +6,26 @@ export const waveFunctionCollapse2d = (
   pixelData: PixelData,
   sampleSize: Vector,
   stride: Vector
-) => {
+): PixelData => {
   const tiles = range(
-    (pixelData.pixels.length - sampleSize.y) / stride.y
+    (pixelData.size.y - sampleSize.y) / stride.y
   ).flatMap(sy =>
-    range((pixelData.pixels[0].length - sampleSize.x) / stride.x).map(sx =>
-      sample(pixelData.pixels, vec(sx, sy), sampleSize)
+    range((pixelData.size.x - sampleSize.x) / stride.x).map(sx =>
+      sample(pixelData, vec(sx, sy), sampleSize)
     )
   );
   const superpositionTile: PixelData = tiles.reduce((accTile, tile) => ({
     ...accTile,
-    pixels: accTile.pixels.map((pixel, i) => pixel.map((v, pi) => v + tile.pixels[i][pi]) as Pixel)
+    pixels: accTile.pixels.map(
+      (pixel, i) => pixel.map((v, pi) => v + tile.pixels[i][pi]) as Pixel
+    )
   }));
-  const normalizedSuperpositionTile: PixelData = {
-    ...superpositionTile,
-    pixels: superpositionTile.pixels.map(pixel => pixel.map(p => p / superpositionTile.pixels.length)) as Pixel[]
-  };
 
-  return normalizedSuperpositionTile;
+  return {
+    ...superpositionTile,
+    // normalize pixel values
+    pixels: superpositionTile.pixels.map(pixel =>
+      pixel.map(p => p / superpositionTile.pixels.length)
+    ) as Pixel[]
+  };
 };

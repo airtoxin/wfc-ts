@@ -38,10 +38,15 @@ export const sample = (
   position: Vector,
   size: Vector
 ): PixelData => {
-  const pixels: Pixel[] = range(size.x * size.y).map(i => pixelData.pixels[position.y * pixelData.size.x +  position.x + ]);
-
   return {
-    pixels,
+    pixels: range(size.y).flatMap(y =>
+      range(size.x).map(
+        x =>
+          pixelData.pixels[
+          (position.y + y) * pixelData.size.x + (position.x + x)
+            ]
+      )
+    ),
     size
   };
 };

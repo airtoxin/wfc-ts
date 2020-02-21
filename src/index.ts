@@ -9,16 +9,21 @@ const STRIDE = vec(1, 1);
 
 const main = async () => {
   const imageData = await getImageData(simpleKnotSrc);
+  const pixelData = convertToPixels(imageData);
 
   const previewDiv = document.createElement("div");
   const previewTitle = document.createElement("h1");
   previewTitle.innerText = "Preview";
   previewDiv.appendChild(previewTitle);
-  previewDiv.appendChild(preview(imageData));
+  previewDiv.appendChild(preview(pixelData));
 
   document.body.appendChild(previewDiv);
 
-  waveFunctionCollapse2d(convertToPixels(imageData), SIZE, STRIDE)
+  const superpositionTilePixelData = waveFunctionCollapse2d(pixelData, SIZE, STRIDE);
+
+  const tilePreviewDiv = document.createElement("div");
+  tilePreviewDiv.appendChild(preview(superpositionTilePixelData));
+  document.body.appendChild(tilePreviewDiv);
 };
 
 main().catch();
