@@ -1,5 +1,5 @@
 import { enumerate, range } from "./array-util";
-import { getPixels } from "./image";
+import { convertToPixels } from "./image";
 
 export const preview = (imageData: ImageData): HTMLElement => {
   const imageDiv = document.createElement("div");
@@ -20,7 +20,7 @@ export const preview = (imageData: ImageData): HTMLElement => {
     imageDiv.appendChild(rowDiv);
   }
 
-  for (const [y, pixelRow] of enumerate(getPixels(imageData))) {
+  for (const [y, pixelRow] of enumerate(convertToPixels(imageData))) {
     for (const [x, [r, g, b, a]] of enumerate(pixelRow)) {
       divs[y][x].style.backgroundColor = `rgba(${r},${g},${b},${a})`;
     }

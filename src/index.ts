@@ -1,10 +1,11 @@
 import simpleKnotSrc from "./samples/SimpleKnot.png";
-import { getImageData } from "./image";
+import { convertToPixels, getImageData } from "./image";
 import { preview } from "./preview";
-import { Vector } from "./vector";
+import { vec } from "./vector";
+import { waveFunctionCollapse2d } from "./wave-function-collapse";
 
-const SIZE = new Vector(5, 5);
-const STRIDE = new Vector(3, 3);
+const SIZE = vec(5, 5);
+const STRIDE = vec(1, 1);
 
 const main = async () => {
   const imageData = await getImageData(simpleKnotSrc);
@@ -16,6 +17,8 @@ const main = async () => {
   previewDiv.appendChild(preview(imageData));
 
   document.body.appendChild(previewDiv);
+
+  waveFunctionCollapse2d(convertToPixels(imageData), SIZE, STRIDE)
 };
 
 main().catch();

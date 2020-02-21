@@ -1,33 +1,47 @@
-import { enumerate, take } from "./array-util";
+import { range, take } from "./array-util";
+import { vec, Vector } from "./vector";
 
-export const getImageData = (src: string): Promise<ImageData> => new Promise(resolve => {
-  const img = new Image();
-  img.src = src;
-  img.addEventListener("load", () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
+export const getImageData = (src: string): Promise<ImageData> =>
+  new Promise(resolve => {
+    const img = new Image();
+    img.src = src;
+    img.addEventListener("load", () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
 
-    const ctx = canvas.getContext("2d")!;
-    ctx.drawImage(img, 0, 0);
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0);
 
-    resolve(ctx.getImageData(0, 0, img.width, img.height));
+      resolve(ctx.getImageData(0, 0, img.width, img.height));
+    });
   });
-});
 
-export type PixelData = [number, number, number, number];
-export const getPixels = (imageData: ImageData): PixelData[][] => {
-  const pixels: ReturnType<typeof getPixels> = [];
+export type Pixel = [number, number, number, number];
+export type PixelData = {
+  pixels: Pixel[];
+  size: Vector;
+};
+export const convertToPixels = (imageData: ImageData): PixelData => {
+  const pixels = Array.from(take(4)([...imageData.data] as number[])).filter(
+    (pixel): pixel is Pixel => pixel.length === 4
+  );
 
-  for (const [i, rgba] of enumerate(take(4)([...imageData.data]))) {
-    const x = i % imageData.width;
-    const y = Math.floor(i / imageData.width);
+  return {
+    pixels,
+    size: vec(imageData.width, imageData.height)
+  };
+};
 
-    if (pixels[y] == null) {
-      pixels[y] = [];
-    }
-    pixels[y][x] = rgba as PixelData;
-  }
+export const sample = (
+  pixelData: PixelData,
+  position: Vector,
+  size: Vector
+): PixelData => {
+  const pixels: Pixel[] = range(size.x * size.y).map(i => pixelData.pixels[position.y * pixelData.size.x +  position.x + ]);
 
-  return pixels;
+  return {
+    pixels,
+    size
+  };
 };
